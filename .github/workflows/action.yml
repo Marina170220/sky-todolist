@@ -53,4 +53,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            docker system prune -f
+            sudo docker system prune -a -f
