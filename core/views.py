@@ -33,7 +33,7 @@ class ProfileView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
-    @method_decorator(ensure_csrf_cookie)
+    # @method_decorator(ensure_csrf_cookie)
     def get_object(self):
         return self.request.user
 
