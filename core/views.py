@@ -15,6 +15,10 @@ class SingUpView(CreateAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserCreateSerializer
 
+    def perform_create(self, serializer):
+        super().perform_create(serializer)
+        login(self.request, user=serializer.user, backend="django.contrib.auth.backends.ModelBackend",)
+
 
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
