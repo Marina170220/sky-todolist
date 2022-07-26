@@ -36,7 +36,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           source: "deploy/docker-compose.yaml,deploy/.env"
-          target: "skylist_35"
+          target: "skylist"
           strip_components: 1
       - name: run docker-compose
         uses: appleboy/ssh-action@master
@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            cd skylist_35
+            cd skylist
             echo ${{ secrets.PASSWORD }} | sudo -S docker-compose up -d
       - name: Cleanup after deploy
         if: always()
