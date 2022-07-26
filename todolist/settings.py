@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "social_django",
     'core',
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
+                # 'social_django.context_processors.backends',
+                # 'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -130,7 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.vk.VKOAuth2',
+    "social_core.backends.vk.VKOAuth2",
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -153,8 +154,8 @@ SOCIAL_AUTH_VK_OAUTH2_SECRET = env("SOCIAL_AUTH_VK_OAUTH2_SECRET")
 SOCIAL_AUTH_VK_OAUTH2_SCOPE = ["email", "photos", "notify"]
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/logged-in/"
 SOCIAL_AUTH_LOGIN_ERROR_URL = "/login-error/"
-SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = "/account-disconnected-redirect-url/"
-SOCIAL_AUTH_INACTIVE_USER_URL = "/inactive-user/"
+# SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = "/account-disconnected-redirect-url/"
+# SOCIAL_AUTH_INACTIVE_USER_URL = "/inactive-user/"
 # SOCIAL_AUTH_VK_OAUTH2_WHITELISTED_DOMAINS = ["skylist.ga"]
 
 # LOGIN_REDIRECT_URL = '/categories/'
