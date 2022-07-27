@@ -1,5 +1,4 @@
-SECRET_KEY="pw6z@e8e21iwii%m3&5"
-DATABASE_URL='psql://td_user:td_paSS81@postgres:5432/todolist'
 DEBUG=True
+DATABASE_URL=psql://td_user:td_paSS81@postgres:5432/todolist
 SOCIAL_AUTH_VK_OAUTH2_KEY=
 SOCIAL_AUTH_VK_OAUTH2_SECRET=

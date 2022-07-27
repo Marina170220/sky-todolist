@@ -5,3 +5,4 @@ docker-compose.yaml
 .python-version
 app.db
 .env
+postgres-data
