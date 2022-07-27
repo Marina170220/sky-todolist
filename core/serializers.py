@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "first_name", "last_name", "email")
 
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
     username=serializers.CharField(write_only=True)
     password=serializers.CharField(write_only=True)
 
