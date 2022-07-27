@@ -9,3 +9,4 @@ asgiref==3.5.2
 sqlparse==0.4.2
 tzdata==2022.1
 drf-yasg==1.21.3
+urllib3==1.26.10
