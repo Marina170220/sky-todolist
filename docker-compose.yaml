@@ -29,6 +29,7 @@ services:
   postgres:
     image: postgres:latest
     environment:
+      POSTGRES_USER: td_user
       POSTGRES_PASSWORD: td_paSS81
       POSTGRES_DB: todolist
     healthcheck:
