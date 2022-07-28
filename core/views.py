@@ -23,6 +23,7 @@ class SingUpView(CreateAPIView):
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
 
+    @method_decorator(ensure_csrf_cookie)
     def post(self, request, *args, ** kwargs):
         serializer: LoginSerializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
