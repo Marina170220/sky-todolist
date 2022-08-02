@@ -12,9 +12,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Goal)
 class GoalAdmin(admin.ModelAdmin):
-    list_display = ("title", "category", "user", "status", "created", "updated", "priority", "expires")
+    list_display = ("title", "category", "user", "status", "created", "updated", "priority", "due_date")
     list_display_links = ("title", )
-    list_filter = ("user", "expires", "category", "status", "priority")
+    list_filter = ("user", "due_date", "category", "status", "priority")
     search_fields = ("title", "user")
 
 @admin.register(Comment)

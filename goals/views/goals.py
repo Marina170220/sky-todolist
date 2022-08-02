@@ -22,8 +22,8 @@ class GoalListView(ListAPIView):
     pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = GoalDateFilter
-    ordering_fields = ["priority", "expires"]
-    ordering = ["priority", "expires"]
+    ordering_fields = ["priority", "due_date"]
+    ordering = ["priority", "due_date"]
     search_fields = ["title", "description"]
 
     def get_queryset(self):

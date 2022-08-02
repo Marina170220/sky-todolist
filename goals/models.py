@@ -53,7 +53,7 @@ class Goal(DatesModelMixin):
     description = models.TextField(verbose_name="Описание", null=True, blank=True, default=None)
     status = models.PositiveSmallIntegerField(verbose_name="Статус", choices=Status.choices, default=Status.to_do)
     priority = models.PositiveSmallIntegerField(verbose_name="Приоритет", choices=Priority.choices, default=Priority.medium)
-    expires = models.DateTimeField(verbose_name="Дата дедлайна", null=True, blank=True, default=None)
+    due_date = models.DateTimeField(verbose_name="Дата дедлайна", null=True, blank=True, default=None)
 
     # is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
