@@ -9,7 +9,7 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        read_only_fields = ("id", "created", "updated", "user")
+        read_only_fields = ("id", "created", "updated", "user", "is_deleted")
         fields = "__all__"
 
 

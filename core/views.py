@@ -24,13 +24,13 @@ class SingUpView(CreateAPIView):
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
 
-    def post(self, request, *args, ** kwargs):
+    def post(self, request, *args, ** kwargs) -> Response:
         serializer: LoginSerializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
-        login(request, user=user)
+        login(request, user=user, backend="django.contrib.auth.backends.ModelBackend",)
         user_serializer = UserSerializer(instance=user)
-        return Response(user_serializer.data)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
 
 
 class ProfileView(RetrieveUpdateDestroyAPIView):
@@ -53,16 +53,3 @@ class UpdatePasswordView(UpdateAPIView):
 
     def get_object(self):
         return self.request.user
-
-
-
-
-
-
-
-
-
-
-
-
-

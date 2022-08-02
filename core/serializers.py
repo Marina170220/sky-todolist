@@ -36,10 +36,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    username=serializers.CharField(write_only=True)
-    password=serializers.CharField(write_only=True)
+    username=serializers.CharField(required=True, write_only=True)
+    password=serializers.CharField(required=True, write_only=True)
 
-    def validate(self, attrs: dict):
+    def validate(self, attrs: dict) -> User:
         username: str = attrs.get("username")
         password: str = attrs.get("password")
 
