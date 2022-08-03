@@ -53,6 +53,7 @@ class BoardParticipant(DatesModelMixin):
         verbose_name = "Участник"
         verbose_name_plural = "Участники"
 
+
     board = models.ForeignKey(Board, verbose_name="Доска", on_delete=models.PROTECT, related_name="participants")
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.PROTECT, related_name="participants")
     role = models.PositiveSmallIntegerField(verbose_name="Роль", choices=Role.choices, default=Role.OWNER)
