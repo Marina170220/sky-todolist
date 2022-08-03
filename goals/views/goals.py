@@ -1,8 +1,6 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated
 
 from goals.filters import GoalDateFilter
 from goals.models import Goal, Status
@@ -27,7 +25,6 @@ class GoalListView(ListAPIView):
     search_fields = ["title", "description"]
 
     def get_queryset(self):
-        print(f"Список целей {Goal.objects.filter(category__board__participants__user=self.request.user)}")
         return Goal.objects.filter(category__board__participants__user=self.request.user)
 
 
