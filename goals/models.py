@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 
 from core.models import User
 
@@ -26,16 +25,10 @@ class Role(models.IntegerChoices):
 
 class DatesModelMixin(models.Model):
     class Meta:
-        abstract = True  # Помечаем класс как абстрактный – для него не будет таблички в БД
+        abstract = True
 
     created = models.DateTimeField(verbose_name="Дата создания", auto_now_add=True)
     updated = models.DateTimeField(verbose_name="Дата последнего обновления", auto_now=True)
-
-    # def save(self, *args, **kwargs):
-    #         if not self.id:  # Когда модель только создается – у нее нет id
-    #             self.created = timezone.now()
-    #         self.updated = timezone.now()  # Каждый раз, когда вызывается save, проставляем свежую дату обновления
-    #         return super().save(*args, **kwargs)
 
 
 class Board(DatesModelMixin):
@@ -45,6 +38,9 @@ class Board(DatesModelMixin):
 
     title = models.CharField(verbose_name="Название", max_length=255)
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
+
+    def __str__(self):
+        return self.title
 
 
 class BoardParticipant(DatesModelMixin):
@@ -58,6 +54,9 @@ class BoardParticipant(DatesModelMixin):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.PROTECT, related_name="participants")
     role = models.PositiveSmallIntegerField(verbose_name="Роль", choices=Role.choices, default=Role.OWNER)
 
+    def __str__(self):
+        return self.user.username
+
 
 class Category(DatesModelMixin):
     class Meta:
@@ -68,6 +67,9 @@ class Category(DatesModelMixin):
     title = models.CharField(verbose_name="Название", max_length=255)
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT, related_name="categories")
     is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
+
+    def __str__(self):
+        return self.title
 
 
 class Goal(DatesModelMixin):
@@ -84,7 +86,6 @@ class Goal(DatesModelMixin):
                                                 default=Priority.MEDIUM)
     due_date = models.DateTimeField(verbose_name="Дата дедлайна", null=True, blank=True, default=None)
 
-    # is_deleted = models.BooleanField(verbose_name="Удалена", default=False)
 
     def __str__(self):
         return self.title
