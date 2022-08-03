@@ -120,3 +120,4 @@ class BoardParticipantAdmin(admin.ModelAdmin):
     list_display = ("user", "board", "role", "created", "updated")
     search_fields = ("user", "board")
     readonly_fields = ("created", "updated")
+    list_filter = ("board", "role")
