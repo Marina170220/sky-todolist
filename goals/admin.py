@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from goals.models import Category, Goal, Comment
+from goals.models import Category, Goal, Comment, Board
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -23,3 +24,11 @@ class CommentAdmin(admin.ModelAdmin):
     list_display_links = ("text", )
     list_filter = ("user", "goal", "created")
     search_fields = ("text", "user")
+
+
+# @admin.register(Board)
+# class CommentAdmin(admin.ModelAdmin):
+#     list_display = ("text", "is_deleted", "created", "updated")
+#     list_display_links = ("text", )
+#     list_filter = ("created", )
+#     search_fields = ("text", )

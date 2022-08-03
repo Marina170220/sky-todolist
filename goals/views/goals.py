@@ -12,13 +12,13 @@ from goals.serializers import GoalCreateSerializer, GoalSerializer
 
 class GoalCreateView(CreateAPIView):
     model = Goal
-    permission_classes = [GoalPermissions]
+    permission_classes = [IsAuthenticated]
     serializer_class = GoalCreateSerializer
 
 
 class GoalListView(ListAPIView):
     model = Goal
-    permission_classes = [GoalPermissions]
+    permission_classes = [IsAuthenticated]
     serializer_class = GoalSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = GoalDateFilter

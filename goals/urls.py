@@ -6,6 +6,14 @@ from goals.views.goals import GoalCreateView, GoalListView, GoalView
 from goals.views.boards import BoardCreateView, BoardView, BoardListView
 
 urlpatterns = [
+    path("board/", include((
+            [
+                path("create", BoardCreateView.as_view(), name="create"),
+                path("list", BoardListView.as_view(), name="list"),
+                path("<int:pk>", BoardView.as_view(), name="main"),
+
+            ], "board"), namespace="board")),
+
     path("goal_category/", include((
         [
             path("create", CategoryCreateView.as_view(), name="create"),
@@ -25,13 +33,5 @@ urlpatterns = [
             path("create", CommentCreateView.as_view(), name="create"),
             path("list", CommentListView.as_view(), name="list"),
             path("<int:pk>", CommentView.as_view(), name="main"),
-        ], "goal_comment"), namespace="goal_comment")),
-
-    path("board/", include((
-        [
-            path("create", BoardCreateView.as_view(), name="create"),
-            path("list", BoardListView.as_view(), name="list"),
-            path("<int:pk>", BoardView.as_view(), name="main"),
-
-        ], "board"), namespace="board"))
+        ], "goal_comment"), namespace="goal_comment"))
     ]
