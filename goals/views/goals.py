@@ -39,6 +39,6 @@ class GoalView(RetrieveUpdateDestroyAPIView):
         return Goal.objects.filter(user=self.request.user)
 
     def perform_destroy(self, instance):
-        instance.status = Status.archived
+        instance.status = Status.ARCHIVED
         instance.save()
         return instance
