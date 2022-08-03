@@ -49,7 +49,6 @@ class CategoryPermissions(BasePermission):
         return BoardParticipant.objects.filter(**filters).exists()
 
 
-
 class GoalPermissions(BasePermission):
     def has_object_permission(self, request, view, obj):
         if not request.user:
@@ -64,9 +63,3 @@ class GoalPermissions(BasePermission):
             filters["role__in"] = [Role.OWNER, Role.WRITER]
 
         return BoardParticipant.objects.filter(**filters).exists()
-
-
-
-
-
-
