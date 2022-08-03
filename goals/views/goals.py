@@ -20,6 +20,7 @@ class GoalListView(ListAPIView):
     model = Goal
     permission_classes = [GoalPermissions]
     serializer_class = GoalSerializer
+    pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = GoalDateFilter
     ordering_fields = ["priority", "due_date"]
@@ -27,6 +28,7 @@ class GoalListView(ListAPIView):
     search_fields = ["title", "description"]
 
     def get_queryset(self):
+        print(f"Список целей {Goal.objects.filter(category__board__participants__user=self.request.user)}")
         return Goal.objects.filter(category__board__participants__user=self.request.user)
 
 

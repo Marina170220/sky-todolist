@@ -29,8 +29,6 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         return value
 
 
-
-
 class CategorySerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
 
@@ -71,7 +69,6 @@ class GoalCreateSerializer(GoalSerializer):
             raise ValidationError("not owner of category")
 
         return value
-
 
 
 class CommentCreateSerializer(serializers.ModelSerializer):
