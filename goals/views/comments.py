@@ -11,27 +11,26 @@ from goals.serializers import CommentCreateSerializer, CommentSerializer
 
 class CommentCreateView(CreateAPIView):
     model = Comment
-    permission_classes = [IsAuthenticated]
+    permission_classes = [CommentPermissions]
     serializer_class = CommentCreateSerializer
 
 
 class CommentListView(ListAPIView):
     model = Comment
-    permission_classes = [IsAuthenticated, CommentPermissions]
+    permission_classes = [CommentPermissions]
     serializer_class = CommentSerializer
-    pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ["goal"]
     ordering = ["-id"]
 
     def get_queryset(self):
-        return Comment.objects.filter(goal__user=self.request.user)
+        return Comment.objects.filter(goal__category__board__participants__user=self.request.user)
 
 
 class CommentView(RetrieveUpdateDestroyAPIView):
     model = Comment
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, CommentPermissions]
+    permission_classes = [CommentPermissions]
 
     def get_queryset(self):
-        return Comment.objects.filter(goal__user=self.request.user)
+        return Comment.objects.filter(goal__category__board__participants__user=self.request.user)
