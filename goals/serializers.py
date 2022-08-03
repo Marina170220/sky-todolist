@@ -24,7 +24,7 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
             role__in=[Role.OWNER, Role.WRITER],
             user=self.context["request"].user
         ).exists():
-            return ValidationError("not owner of category")
+            raise ValidationError("not owner of category")
 
         return value
 
@@ -68,7 +68,7 @@ class GoalCreateSerializer(GoalSerializer):
             role__in=[Role.OWNER, Role.WRITER],
             user=self.context["request"].user
         ).exists():
-            return ValidationError("not owner of category")
+            raise ValidationError("not owner of category")
 
         return value
 
@@ -88,7 +88,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
             role__in=[Role.OWNER, Role.WRITER],
             user=self.context["request"].user
         ).exists():
-            return ValidationError("not owner of category")
+            raise ValidationError("not owner of category")
 
         return value
 
