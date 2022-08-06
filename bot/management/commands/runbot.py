@@ -1,12 +1,38 @@
 import os
+from enum import Enum, unique, auto
+from typing import Optional
 
 from django.core.management import BaseCommand
+from marshmallow_dataclass import dataclass
 
 from bot.models import TgUser
 from bot.tg.client import TgClient
 from bot.tg.dc import Message
-from goals.models import Goal
+from goals.models import Goal, Category
 from todolist import settings
+
+
+@dataclass
+class NewGoal:
+    cat_id: Optional[int] = None
+    goal_title: Optional[str] = None
+
+    def complete(self) -> bool:
+        return None not in {self.cat_id, self.goal_title}
+
+
+@unique
+class StateEnum(Enum):
+    CREATE_CATEGORY_STATE = auto()
+    CHOSEN_CATEGORY = auto()
+
+@dataclass
+class FSMData:
+    state: StateEnum
+    goal: NewGoal
+
+
+FSM_STATES: dict[int, FSMData] = dict()
 
 
 class Command(BaseCommand):
@@ -32,14 +58,34 @@ class Command(BaseCommand):
         goals_list: list[str] = [f'#{goal.id} {goal.title}' for goal in Goal.objects.filter(user_id=tg_user.user_id)]
         self.tg_client.send_message(msg.chat.id, "\n".join(goals_list) or "[goals list is empty]")
 
+    def handle_categories_list(self, msg: Message, tg_user: TgUser):
+        cats_list: list[str] = [f'#{cat.id} {cat.title}' for cat in Category.objects.filter(
+            board__participants__user_id=tg_user.user_id,
+            is_deleted=False)
+                                ]
+        if cats_list:
+            self.tg_client.send_message(msg.chat.id, "Select category\n{}".format("\n".join(cats_list)))
+        else:
+            self.tg_client.send_message(msg.chat.id, "Categories not found")
+
 
     def handle_verified_user(self, msg: Message, tg_user: TgUser):
         if not msg.text:
             return
         if "/goals" in msg.text:
             self.handle_goals_list(msg=msg, tg_user=tg_user)
+
+        elif "/create" in msg.text:
+            self.handle_categories_list(msg=msg, tg_user=tg_user)
+            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.CREATE_CATEGORY_STATE, goal=NewGoal())
+
+        elif "/cancel" in msg.text and tg_user.chat_id in FSM_STATES:
+            FSM_STATES.pop(tg_user.chat_id)
+
         else:
             self.tg_client.send_message(msg.chat.id, "[unknown command]")
+
+        print(FSM_STATES)
 
 
     def handle_message(self, msg: Message):
@@ -57,7 +103,6 @@ class Command(BaseCommand):
 
         else:
             self.handle_user_without_verification(msg, tg_user)
-
 
     def handle(self, *args, **options):
         offset = 0
