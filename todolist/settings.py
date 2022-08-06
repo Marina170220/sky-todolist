@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "django_filters",
     "core",
     "goals",
+    "bot",
     "drf_yasg",
 ]
 
@@ -182,3 +183,5 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
+
+BOT_TOKEN = env("BOT_TOKEN")
