@@ -93,8 +93,8 @@ class Command(BaseCommand):
                 self.tg_client.send_message(msg.chat.id, "[Do you want to create a new category?]")
                 if "y" in msg.text.lower():
                     FSM_STATES[tg_user.chat_id].state = StateEnum.CREATE_NEW_CATEGORY
-                    FSM_STATES[tg_user.chat_id].goal.cat_id = cat_id
-                    self.save_new_category(msg=msg, tg_user=tg_user)
+                    # FSM_STATES[tg_user.chat_id].category.cat_title = cat_id
+                    self.handle_save_new_category(msg=msg, tg_user=tg_user)
 
                 else:
                     FSM_STATES.pop(tg_user.chat_id)
@@ -103,13 +103,14 @@ class Command(BaseCommand):
         else:
             self.tg_client.send_message(msg.chat.id, "[Invalid category id]")
 
-    def save_new_category(self, msg: Message, tg_user: TgUser):
+    def handle_save_new_category(self, msg: Message, tg_user: TgUser):
         self.tg_client.send_message(msg.chat.id, "[Set category title]")
         category: NewCategory = FSM_STATES[tg_user.chat_id].category
         category.cat_title = msg.text
         if category.complete():
             Category.objects.create(
                 title=category.cat_title,
+
                 user_id=tg_user.user_id
             )
             self.tg_client.send_message(msg.chat.id, "[New category created]")
