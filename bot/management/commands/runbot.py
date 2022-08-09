@@ -20,27 +20,17 @@ class NewGoal:
     def complete(self) -> bool:
         return None not in {self.cat_id, self.goal_title}
 
-@dataclass
-class NewCategory:
-    cat_title: Optional[str] = None
-
-    def complete(self) -> bool:
-        return None not in { self.cat_title}
-
-
 @unique
 class StateEnum(Enum):
     CREATE_CATEGORY_STATE = auto()
     CHOSEN_CATEGORY = auto()
     VIEW_GOALS_LIST = auto()
-    CREATE_NEW_CATEGORY = auto()
 
 
 @dataclass
 class FSMData:
     state: StateEnum
     goal: NewGoal
-    category: NewCategory
 
 
 FSM_STATES: dict[int, FSMData] = dict()
@@ -89,36 +79,8 @@ class Command(BaseCommand):
                 self.tg_client.send_message(msg.chat.id, "[Set title]")
                 FSM_STATES[tg_user.chat_id].state = StateEnum.CHOSEN_CATEGORY
                 return
-            else:
-                self.tg_client.send_message(msg.chat.id, "[Do you want to create a new category?]")
-                if "y" in msg.text.lower():
-                    FSM_STATES[tg_user.chat_id].state = StateEnum.CREATE_NEW_CATEGORY
-                    # FSM_STATES[tg_user.chat_id].category.cat_title = cat_id
-                    self.handle_save_new_category(msg=msg, tg_user=tg_user)
 
-                else:
-                    FSM_STATES.pop(tg_user.chat_id)
-                    self.tg_client.send_message(msg.chat.id, "[Action cancelled]")
-
-        else:
-            self.tg_client.send_message(msg.chat.id, "[Invalid category id]")
-
-    def handle_save_new_category(self, msg: Message, tg_user: TgUser):
-        self.tg_client.send_message(msg.chat.id, "[Set category title]")
-        category: NewCategory = FSM_STATES[tg_user.chat_id].category
-        category.cat_title = msg.text
-        if category.complete():
-            Category.objects.create(
-                title=category.cat_title,
-
-                user_id=tg_user.user_id
-            )
-            self.tg_client.send_message(msg.chat.id, "[New category created]")
-        else:
-            self.tg_client.send_message(msg.chat.id, "[Something went wrong]")
-
-        FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.CREATE_CATEGORY_STATE, goal=NewGoal(), category=category)
-
+        self.tg_client.send_message(msg.chat.id, "[Invalid category id]")
 
     def handle_save_new_goal(self, msg: Message, tg_user: TgUser):
         goal: NewGoal = FSM_STATES[tg_user.chat_id].goal
@@ -140,12 +102,11 @@ class Command(BaseCommand):
             return
         if "goals" in msg.text:
             self.handle_goals_list(msg=msg, tg_user=tg_user)
-            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.VIEW_GOALS_LIST, goal=None, category=None)
-
+            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.VIEW_GOALS_LIST, goal=None)
 
         elif "create" in msg.text:
             self.handle_categories_list(msg=msg, tg_user=tg_user)
-            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.CREATE_CATEGORY_STATE, goal=NewGoal(), category=None)
+            FSM_STATES[tg_user.chat_id] = FSMData(state=StateEnum.CREATE_CATEGORY_STATE, goal=NewGoal())
 
         elif "cancel" in msg.text and tg_user.chat_id in FSM_STATES:
             FSM_STATES.pop(tg_user.chat_id)
