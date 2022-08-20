@@ -1,23 +1,36 @@
+import pytest
 from rest_framework import status
 
-import pytest
+from goals.models import BoardParticipant, Board, Role
 
-from goals.serializers import CategorySerializer
-from tests.factories import CategoryFactory
+URL = '/goals/goal_category/list'
+
+@pytest.mark.django_db
+def test_no_categories(auth_client):
+    response = auth_client.get(URL)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == []
 
 
 @pytest.mark.django_db
-def test_goals_list_success(auth_client):
-    cats = CategoryFactory.create_batch(2)
+def test_not_participant(auth_client, user, board):
+    assert BoardParticipant.objects.filter(user_id=user.pk).count() == 0
+    assert Board.objects.count() == 1
 
-    expected_response = {
-        "count": 2,
-        "next": None,
-        "previous": None,
-        "results": CategorySerializer(cats, many=True).data
-    }
-
-    response = auth_client.get("/goals/goal_category/list")
-
+    response = auth_client.get(URL)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == expected_response
+    assert response.json() == []
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("board_participant__role", [Role.OWNER, Role.WRITER, Role.READER],
+                         ids=['owner', 'writer', 'reader'])
+def test_board_participant(auth_client, category, board_participant):
+    response = auth_client.get(URL)
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]['id'] == category.id
+    assert data[0]['is_deleted'] == False
+    assert data[0]['title'] == category.title

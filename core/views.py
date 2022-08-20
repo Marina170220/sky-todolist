@@ -1,6 +1,4 @@
 from django.contrib.auth import login, logout
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -10,7 +8,6 @@ from core.models import User
 from core.serializers import UserCreateSerializer, LoginSerializer, UserSerializer, PasswordUpdateSerializer
 
 
-# @method_decorator(csrf_exempt, name='dispatch')
 class SingUpView(CreateAPIView):
     model = User
     permission_classes = [AllowAny]
@@ -20,7 +17,6 @@ class SingUpView(CreateAPIView):
         super().perform_create(serializer)
         login(self.request, user=serializer.user, backend="django.contrib.auth.backends.ModelBackend",)
 
-# @method_decorator(csrf_exempt, name='dispatch')
 class LoginView(GenericAPIView):
     serializer_class = LoginSerializer
 

@@ -1,15 +1,20 @@
 import pytest
 from rest_framework import status
 
-
-from goals.serializers import BoardSerializer
+from goals.serializers import CategorySerializer
 
 
 @pytest.mark.django_db
-def test_retrieve_category(auth_client, category_1):
-    response = auth_client.get(f"/goals/goal_category/{category_1.id}",
-                          content_type='application/json'
-                          )
+def test_retrieve_category(auth_client, category, board_participant):
+    response = auth_client.get(f"/goals/goal_category/{category.id}")
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == BoardSerializer(category_1).data
+    assert response.json() == CategorySerializer(category).data
+
+
+@pytest.mark.django_db
+def test_unauthorized(client, category):
+
+    response = client.get(f"/goals/goal_category/{category.pk}")
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN

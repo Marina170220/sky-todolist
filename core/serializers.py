@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
@@ -16,7 +18,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "first_name", "last_name", "email", "password", "password_repeat")
 
     def validate(self, attrs: dict):
-        password: str = attrs.get("password")
+        password: Optional[str] = attrs.get("password")
         password_repeat: str = attrs.pop("password_repeat", None)
         if password != password_repeat:
             raise ValidationError("Passwords are not equal")
@@ -39,9 +41,9 @@ class LoginSerializer(serializers.Serializer):
     username=serializers.CharField(required=True, write_only=True)
     password=serializers.CharField(required=True, write_only=True)
 
-    def validate(self, attrs: dict) -> User:
-        username: str = attrs.get("username")
-        password: str = attrs.get("password")
+    def validate(self, attrs: dict) -> dict:
+        username: Optional[str] = attrs.get("username")
+        password: Optional[str] = attrs.get("password")
 
         user = authenticate(username=username, password=password)
         if not user:
@@ -70,9 +72,3 @@ class PasswordUpdateSerializer(serializers.ModelSerializer):
         instance.set_password(validated_data["new_password"])
         instance.save(update_fields=["password"])
         return instance
-
-
-
-
-
-

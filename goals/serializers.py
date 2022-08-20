@@ -22,7 +22,7 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         if not BoardParticipant.objects.filter(
             board=value,
             role__in=[Role.OWNER, Role.WRITER],
-            user=self.context["request"].user
+            user_id=self.context["request"].user.id
         ).exists():
             raise ValidationError("not owner of category")
 
@@ -64,7 +64,7 @@ class GoalCreateSerializer(GoalSerializer):
         if not BoardParticipant.objects.filter(
             board=value.board_id,
             role__in=[Role.OWNER, Role.WRITER],
-            user=self.context["request"].user
+            user_id=self.context["request"].user.id
         ).exists():
             raise ValidationError("not owner of category")
 
@@ -83,7 +83,7 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         if not BoardParticipant.objects.filter(
             board=value.category.board_id,
             role__in=[Role.OWNER, Role.WRITER],
-            user=self.context["request"].user
+            user_id=self.context["request"].user.id
         ).exists():
             raise ValidationError("not owner of category")
 
@@ -132,7 +132,6 @@ class BoardParticipantSerializer(serializers.ModelSerializer):
 
 class BoardSerializer(serializers.ModelSerializer):
     participants = BoardParticipantSerializer(many=True)
-    # user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Board
@@ -141,7 +140,6 @@ class BoardSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         owner = self.context['request'].user
-        # owner = validated_data.pop("user")
         new_participants = validated_data.pop("participants", [])
         new_by_id = {part["user"].id: part for part in new_participants}
 

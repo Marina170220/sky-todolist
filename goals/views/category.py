@@ -24,7 +24,7 @@ class CategoryListView(ListAPIView):
     search_fields = ["title"]
 
     def get_queryset(self):
-        return Category.objects.filter(board__participants__user=self.request.user, is_deleted=False)
+        return Category.objects.filter(board__participants__user_id=self.request.user.pk, is_deleted=False)
 
 
 class CategoryView(RetrieveUpdateDestroyAPIView):
@@ -33,7 +33,7 @@ class CategoryView(RetrieveUpdateDestroyAPIView):
     permission_classes = [CategoryPermissions]
 
     def get_queryset(self):
-        return Category.objects.filter(board__participants__user=self.request.user, is_deleted=False)
+        return Category.objects.filter(board__participants__user_id=self.request.user.pk, is_deleted=False)
 
     def perform_destroy(self, instance):
         with transaction.atomic():

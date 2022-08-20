@@ -76,7 +76,6 @@ class BoardParticipantInline(admin.TabularInline):
         if not self.has_view_or_change_permission(request):
             queryset = queryset.none()
 
-        # queryset = queryset.exclude(role=Role.OWNER)
         return queryset
 
 

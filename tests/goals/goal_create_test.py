@@ -4,33 +4,31 @@ import pytest
 
 
 @pytest.mark.django_db
-def test_success(auth_client, goal_1):
+def test_success(auth_client, goal, category, board_participant):
 
     data = {
-        "title": goal_1.title,
+        "title": goal.title,
+        "category": category.pk
     }
 
     response = auth_client.post(
         "/goals/goal/create",
-        data=data,
-        content_type='application/json'
+        data=data
     )
 
     assert response.status_code == status.HTTP_201_CREATED
-    assert response.data["title"] == goal_1.title
+    assert response.data["title"] == goal.title
 
 
 @pytest.mark.django_db
-def test_unauthorized(client, goal_1):
-
+def test_no_category(client, goal, board_participant):
     data = {
-        "title": goal_1.title,
+        "title": goal.title,
     }
 
     response = client.post(
         "/goals/goal/create",
-        data=data,
-        content_type='application/json'
+        data=data
     )
 
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_400_BAD_REQUEST

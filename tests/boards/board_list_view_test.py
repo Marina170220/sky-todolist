@@ -1,23 +1,47 @@
+import pytest
 from rest_framework import status
 
-import pytest
+from goals.models import BoardParticipant, Board, Role
+URL = '/goals/board/list'
 
-from goals.serializers import BoardSerializer
-from tests.factories import BoardFactory
+@pytest.mark.django_db
+def test_no_boards(auth_client):
+    response = auth_client.get(URL)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == []
 
 
 @pytest.mark.django_db
-def test_goals_list_success(auth_client):
-    boards = BoardFactory.create_batch(3)
+def test_not_participant(auth_client, user, board):
+    assert BoardParticipant.objects.filter(user_id=user.pk).count() == 0
+    assert Board.objects.count() == 1
 
-    expected_response = {
-        "count": 3,
-        "next": None,
-        "previous": None,
-        "results": BoardSerializer(boards, many=True).data
-    }
-
-    response = auth_client.get("/goals/board/list")
-
+    response = auth_client.get(URL)
     assert response.status_code == status.HTTP_200_OK
-    assert response.data == expected_response
+    assert response.json() == []
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("board_participant__role", [Role.OWNER, Role.WRITER, Role.READER],
+                         ids=['owner', 'writer', 'reader'])
+def test_board_participant(auth_client, board_participant):
+    response = auth_client.get(URL)
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]['id'] == board_participant.board.id
+    assert data[0]['is_deleted'] == False
+    assert data[0]['title'] == board_participant.board.title
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize('board__is_deleted, boards_count', [(True, 0), (False, 1)],
+                         ids=['deleted', 'not deleted'])
+def test_is_deleted(auth_client, board, board_participant, boards_count):
+    response = auth_client.get(URL)
+    assert response.status_code == status.HTTP_200_OK
+    data = response.json()
+    print(f"ДАННЫЕ: {data}")
+    assert isinstance(data, list)
+    assert len(data) == boards_count

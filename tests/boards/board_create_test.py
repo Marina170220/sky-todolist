@@ -12,8 +12,7 @@ def test_success(auth_client, board):
 
     response = auth_client.post(
         "/goals/board/create",
-        data=data,
-        content_type='application/json'
+        data=data
     )
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -29,8 +28,7 @@ def test_unauthorized(client, board):
 
     response = client.post(
         "/goals/board/create",
-        data=data,
-        content_type='application/json'
+        data=data
     )
 
     assert response.status_code == status.HTTP_403_FORBIDDEN

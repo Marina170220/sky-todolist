@@ -3,17 +3,16 @@ from rest_framework import status
 
 
 @pytest.mark.django_db
-def test_sign_up(client, user_1):
+def test_sign_up(client):
     data = {
-        "username": user_1.username,
-        "password": user_1.password,
-        "password_repeat": user_1.password,
+        "username": "test",
+        "password": "test_paSS",
+        "password_repeat": "test_paSS"
     }
 
     response = client.post(
         "/core/signup",
-        data=data,
-        content_type='application/json'
+        data=data
     )
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -30,29 +29,37 @@ def test_get_user_profile(auth_client, user):
         "email": user.email,
     }
 
-    response = auth_client.get(
-        "/core/profile",
-    )
+    response = auth_client.get("/core/profile")
 
     assert response.status_code == status.HTTP_200_OK
     assert response.data == expected_response
 
 
 @pytest.mark.django_db
-def test_get_unauthorized_profile(client, user_1):
+def test_get_unauthorized_profile(client):
 
-    response = client.get(
-        "/core/profile",
-    )
+    response = client.get("/core/profile")
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 @pytest.mark.django_db
 def test_not_found(client):
-    response = client.post(
-        "/cores/signup",
-        content_type='application/json'
-    )
+    response = client.post("/cores/signup")
 
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+@pytest.mark.django_db
+def test_passwords_not_equal(client):
+    data = {
+        "username": "test",
+        "password": "test_pass_1",
+        "password_repeat": "test_pas_1",
+    }
+
+    response = client.post(
+        "/core/signup",
+        data=data
+    )
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST

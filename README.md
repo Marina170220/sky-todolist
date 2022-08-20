@@ -4,6 +4,7 @@
 ###Это итоговый проект курса Python-разработчик от SkyPro.
 
 Целью данного проекта является создание веб-приложения — планировщика задач.
+Проект размещен на домене sky-todolist.ga
 
 Cтек:
   - python 3.10,
@@ -18,7 +19,13 @@ pip install -r requirements.txt
 - DEBUG
 - DATABASE_URL
 - SECRET_KEY
+- SOCIAL_AUTH_VK_OAUTH2_KEY
+- SOCIAL_AUTH_VK_OAUTH2_SECRET
+- BOT_TOKEN
 
+Чтобы запустить приложение воспользуйтесь командой docker-compose up -d
+
+###Этапы выполнения работы:
 
 step#1:
 
@@ -42,4 +49,4 @@ step#5:
 
 step#6:
 
-Добавлен телеграм-бот.
+Добавлен телеграм-бот. Просмотреть свои цели и запланировать новые можно с помощью бота: @sky_todolist_bot
